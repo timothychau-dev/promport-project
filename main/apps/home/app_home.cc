@@ -409,7 +409,7 @@ void create_ui() {
     lv_obj_set_style_text_letter_space(s_lbl_name, 1, 0);
     lv_obj_set_size(s_lbl_name, kContentW, 34);
     lv_label_set_long_mode(s_lbl_name, LV_LABEL_LONG_MODE_DOTS);
-    lv_obj_set_pos(s_lbl_name, kMargin, 236);
+    lv_obj_set_pos(s_lbl_name, kMargin, 241);
 
     // 签名:默认 Bebas 0.5×(≈16px 展示体);含中文时回退 buddy_font_16 0.78×。
     // 加粗:先铺一层 1px 偏移的同文字标签(在底层),再放正文 —— LVGL 无描边样式。
@@ -417,7 +417,7 @@ void create_ui() {
     s_lbl_sig = make_label(s_screen, &lv_font_montserrat_14, kPhosDim, LV_TEXT_ALIGN_CENTER);
     lv_obj_set_size(s_lbl_sig, kContentW, 40);
     lv_label_set_long_mode(s_lbl_sig, LV_LABEL_LONG_MODE_WRAP);
-    lv_obj_set_pos(s_lbl_sig, kMargin, 268);
+    lv_obj_set_pos(s_lbl_sig, kMargin, 273);
     lv_obj_set_style_transform_scale(s_lbl_sig, 256, 0);
     lv_obj_set_style_transform_pivot_x(s_lbl_sig, kContentW / 2, 0);
     lv_obj_set_style_transform_pivot_y(s_lbl_sig, 0, 0);
