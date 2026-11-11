@@ -27,6 +27,14 @@ It is a trimmed-down fork of the Passport OS community firmware. Most feature ap
 
 The boot splash and Wi-Fi setup hotspot are rebranded (`PROMPORT-WiFi-xxxx`).
 
+## The story
+
+Prompter started as an adaptation of the Passport OS community firmware. I liked the hardware and the shell — the launcher, Wi-Fi provisioning, settings, and battery management all work well — but for my daily use I only needed two things: a way to show who I am, and a way to drive my talks. So the ten-app build was trimmed down to what I actually carry, and the whole interface was re-skinned in the Prompt in Progress brand.
+
+The second half of the story is the **Presenter**. I had previously built a standalone PPT remote on the same FoloToy AI Passport hardware — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) tested against PowerPoint and Keynote on macOS and Windows, with a talk timer, slideshow-start shortcut, and a pairing-reset combo. For Prompter, that proven presenter was ported into the fork as a first-class app, paired with the new Profile home: one device that introduces you, then runs your slides.
+
+Don't prompt alone, prompt together.
+
 ## Upstream
 
 Everything here is built on the excellent work of the [Passport OS](https://github.com/manchunx7-bit/passport-os) community firmware — see that repo for the full 10-app original, related projects (Muse, AI voice input), and community install guides.
