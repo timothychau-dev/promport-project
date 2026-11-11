@@ -31,7 +31,13 @@ The boot splash and Wi-Fi setup hotspot are rebranded (`PROMPORT-WiFi-xxxx`).
 
 Prompter started as an adaptation of the Passport OS community firmware. I liked the hardware and the shell — the launcher, Wi-Fi provisioning, settings, and battery management all work well — but for my daily use I only needed two things: a way to show who I am, and a way to drive my talks. So the ten-app build was trimmed down to what I actually carry, and the whole interface was re-skinned in the Prompt in Progress brand.
 
-The second half of the story is the **Presenter**. It comes from [ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt) — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) for the same FoloToy AI Passport hardware, tested against PowerPoint and Keynote, with a talk timer, slideshow-start shortcut, and a pairing-reset combo. For Prompter, that proven presenter was ported into the fork as a first-class app, paired with the new Profile home: one device that introduces you, then runs your slides.
+What I actually did on top of upstream:
+
+- **AI-assisted English translation** of the firmware's user-facing text (upstream is Chinese-first).
+- **Layout updates** — a redesigned centered Home page (avatar, name, tagline) and a rebranded boot splash.
+- **Rebrand** to Prompt in Progress: paper `#F3F1E9`, navy `#0D0E2B`, teal `#00C2C7`, Bebas Neue display, mono labels.
+
+The Presenter app comes unchanged from [ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt) — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) for the same FoloToy AI Passport hardware, tested against PowerPoint and Keynote, with a talk timer, slideshow-start shortcut, and a pairing-reset combo — paired with the new Profile home: one device that introduces you, then runs your slides.
 
 Don't prompt alone, prompt together.
 
