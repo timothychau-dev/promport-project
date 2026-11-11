@@ -1,6 +1,6 @@
 <div align="center">
 
-# Prompter
+# Promport
 
 **Don't prompt alone, prompt together.**
 
@@ -14,14 +14,14 @@ by Timothy Chau · [Prompt in Progress](https://promptinprogress.com) · [create
 
 ## What is this?
 
-Prompter is my day-to-day build of the FoloToy AI Passport hardware: a pocket-sized profile card and presenter remote, rebranded to the Prompt in Progress look — paper `#F3F1E9`, navy `#0D0E2B`, teal `#00C2C7`, Bebas Neue display, mono labels.
+Promport — **Prom**pt + Pass**port** — is my day-to-day build of the FoloToy AI Passport hardware: a pocket-sized profile card and presenter remote, rebranded to the Prompt in Progress look — paper `#F3F1E9`, navy `#0D0E2B`, teal `#00C2C7`, Bebas Neue display, mono labels.
 
 It is a trimmed-down fork of the Passport OS community firmware. Most feature apps were removed; what's left is what I actually use:
 
 | App | What it does |
 | --- | --- |
 | **Home (Profile)** | Centered avatar, name, and brand tagline. Profile (avatar/name/photo) is set by uploading from your phone during setup. |
-| **Presenter** | BLE HID keyboard remote for slideshows — start/advance/back presentations on a paired computer. |
+| **Prompter** (presenter) | BLE HID keyboard remote for slideshows — start/advance/back presentations on a paired computer. |
 | Launcher, Wi-Fi, Settings | System apps for app switching, network setup, and device settings. |
 | Stopwatch, Pomodoro | Kept from upstream; available from the launcher. |
 
@@ -29,7 +29,7 @@ The boot splash and Wi-Fi setup hotspot are rebranded (`PROMPORT-WiFi-xxxx`).
 
 ## The story
 
-Prompter started as an adaptation of the Passport OS community firmware, built for one job: helping me run events and talks — introduce myself, then control my slides without fumbling for a laptop or a separate clicker. I liked the hardware and the shell — the launcher, Wi-Fi provisioning, settings, and battery management all work well — but for that job I only needed two things: a way to show who I am, and a way to drive my presentation. So the ten-app build was trimmed down to what I actually carry, and the whole interface was re-skinned in the Prompt in Progress brand.
+Promport started as an adaptation of the Passport OS community firmware, built for one job: helping me run events and talks — introduce myself, then control my slides without fumbling for a laptop or a separate clicker. I liked the hardware and the shell — the launcher, Wi-Fi provisioning, settings, and battery management all work well — but for that job I only needed two things: a way to show who I am, and a way to drive my presentation. So the ten-app build was trimmed down to what I actually carry, and the whole interface was re-skinned in the Prompt in Progress brand.
 
 What I actually did on top of upstream:
 
@@ -37,11 +37,11 @@ What I actually did on top of upstream:
 - **Layout updates** — a redesigned centered Home page (avatar, name, tagline) and a rebranded boot splash.
 - **Rebrand** to Prompt in Progress: paper `#F3F1E9`, navy `#0D0E2B`, teal `#00C2C7`, Bebas Neue display, mono labels.
 
-The Presenter app comes unchanged from [ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt) — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) for the same FoloToy AI Passport hardware, tested against PowerPoint and Keynote, with a talk timer, slideshow-start shortcut, and a pairing-reset combo. Together with the Profile home it covers the full event flow: the device introduces you on stage, then becomes your clicker for the slides.
+The Prompter app comes unchanged from [ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt) — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) for the same FoloToy AI Passport hardware, tested against PowerPoint and Keynote, with a talk timer, slideshow-start shortcut, and a pairing-reset combo. Together with the Profile home it covers the full event flow: the device introduces you on stage, then becomes your clicker for the slides.
 
 ## Upstream
 
-Everything here is built on the excellent work of the [Passport OS](https://github.com/manchunx7-bit/passport-os) community firmware — see that repo for the full 10-app original, related projects (Muse, AI voice input), and community install guides. The Presenter app is ported from [YeatsLiao/ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt).
+Everything here is built on the excellent work of the [Passport OS](https://github.com/manchunx7-bit/passport-os) community firmware — see that repo for the full 10-app original, related projects (Muse, AI voice input), and community install guides. The Prompter app is ported from [YeatsLiao/ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt).
 
 ## Building from source
 
