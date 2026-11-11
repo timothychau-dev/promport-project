@@ -25,3 +25,4 @@ ui_chars.txt
 # Generated firmware and local validation artifacts
 *.uf2
 *.hex
+.DS_Store
