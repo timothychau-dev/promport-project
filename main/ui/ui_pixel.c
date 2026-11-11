@@ -14,11 +14,13 @@ static const uint32_t s_palettes[UI_THEME_COUNT][UI_COLOR_COUNT] = {
         0x80AF90, 0x8CF5A6, 0xFF9585, 0x03120B, 0x8CF5A6, 0xF2CA6D,
         0x8CF5A6, 0x8CF5A6,
     },
-    /* Prompt in Progress: same structure as Classic, green→teal #00C2C7 on navy. */
+    /* Prompt in Progress: Classic with only the green hues shifted to teal.
+       Same dark neutral-teal surfaces (no indigo), pale teal text, #00C2C7
+       accent; amber/warning and red/danger stay unchanged. */
     [UI_THEME_PROMPT] = {
-        0x0D0E2B, 0x1E2050, 0x2A2D63, 0x2E7478, 0x9EF0F2,
-        0x63AEB2, 0x00C2C7, 0xFF9585, 0x0D0E2B, 0x00C2C7, 0xF2CA6D,
-        0x00C2C7, 0xFF7657,
+        0x03171A, 0x092022, 0x122B2D, 0x376964, 0xA8EDE7,
+        0x80AFA9, 0x00C2C7, 0xFF9585, 0x03171A, 0x00C2C7, 0xF2CA6D,
+        0x00C2C7, 0x8CF5E4,
     },
     [UI_THEME_NEON] = {
         0x0A0B10, 0x17151F, 0x252B32, 0x596373, 0xF4F4F6,
@@ -61,7 +63,7 @@ uint32_t ui_theme_portrait_subject_color(uint8_t level)
 {
     static const uint32_t colors[UI_THEME_COUNT][4] = {
         {0x254D36, 0x4B8060, 0x80B795, 0xA8EDBB},
-        {0x1E2050, 0x2A7A80, 0x63AEB2, 0x9EF0F2},
+        {0x254D4A, 0x4B8080, 0x80B7B5, 0xA8EDE7},
         {0x343C55, 0x657593, 0xB3C5D8, 0xF4F4F6},
     };
     return colors[s_ui_theme][level > 3 ? 3 : level];
