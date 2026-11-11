@@ -72,7 +72,7 @@ LV_FONT_DECLARE(lv_font_unscii_8);
 #define kPhos (ui_theme_color_on_dark(UI_COLOR_TEXT))
 #define kPhosDim (ui_theme_color_on_dark(UI_COLOR_TEXT_DIM))
 #define kPhosBorder (ui_theme_color_on_dark(UI_COLOR_BORDER))
-#define kClock (ui_theme_get() == UI_THEME_NEON ? UI_ACCENT : ui_theme_get() == UI_THEME_PLAYFUL ? ui_theme_color_on_dark(UI_COLOR_SECONDARY) : kPhos)
+#define kClock (ui_theme_get() == UI_THEME_NEON ? UI_ACCENT : kPhos)
 #define kTemperature (ui_theme_is_multicolor() ? ui_theme_color_on_dark(UI_COLOR_TERTIARY) : kPhos)
 #define kWeatherAccent (ui_theme_color_on_dark(ui_theme_get() == UI_THEME_NEON ? UI_COLOR_SUCCESS : UI_COLOR_ACCENT))
 

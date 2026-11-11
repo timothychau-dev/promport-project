@@ -14,27 +14,17 @@ static const uint32_t s_palettes[UI_THEME_COUNT][UI_COLOR_COUNT] = {
         0x80AF90, 0x8CF5A6, 0xFF9585, 0x03120B, 0x8CF5A6, 0xF2CA6D,
         0x8CF5A6, 0x8CF5A6,
     },
-    [UI_THEME_TRAVEL] = {
-        0x181B1C, 0x202526, 0x303738, 0x59605D, 0xEEE7D6,
-        0xB3B2A5, 0xDDB36C, 0xF09B87, 0x181B1C, 0x9DB89A, 0xDDB36C,
-        0xDDB36C, 0xDDB36C,
-    },
-    [UI_THEME_PLAYFUL] = {
-        0xF5F7F6, 0xE8EFEC, 0xD7E9E1, 0x7B8885, 0x252D30,
-        0x56635F, 0xA5315B, 0xAE302E, 0xFFFFFF, 0x286B59, 0x805710,
-        0x28648B, 0xA64B29,
+    /* Prompt in Progress: same structure as Classic, green→teal #00C2C7 on navy. */
+    [UI_THEME_PROMPT] = {
+        0x0D0E2B, 0x1E2050, 0x2A2D63, 0x2E7478, 0x9EF0F2,
+        0x63AEB2, 0x00C2C7, 0xFF9585, 0x0D0E2B, 0x00C2C7, 0xF2CA6D,
+        0x00C2C7, 0xFF7657,
     },
     [UI_THEME_NEON] = {
         0x0A0B10, 0x17151F, 0x252B32, 0x596373, 0xF4F4F6,
         0xA4AFC0, 0x38E8E1, 0xFF747D, 0x10131A, 0xAAEE6D, 0xFFD45A,
         0xFF78CA, 0xFFB75E,
     },
-};
-
-static const uint32_t s_playful_dark[UI_COLOR_COUNT] = {
-    0x181B1C, 0x202725, 0x2D3935, 0x53605D, 0xE9EDEB,
-    0xAFBDB7, 0xF58FAA, 0xFF968A, 0x181B1C, 0x8DDFC5, 0xFFD37D,
-    0x86C9FF, 0xFFAD78,
 };
 
 void ui_theme_set(ui_theme_t theme)
@@ -44,10 +34,7 @@ void ui_theme_set(ui_theme_t theme)
 
 ui_theme_t ui_theme_get(void) { return s_ui_theme; }
 bool ui_theme_is_classic(void) { return s_ui_theme == UI_THEME_CLASSIC; }
-bool ui_theme_is_multicolor(void)
-{
-    return s_ui_theme == UI_THEME_PLAYFUL || s_ui_theme == UI_THEME_NEON;
-}
+bool ui_theme_is_multicolor(void) { return s_ui_theme == UI_THEME_NEON; }
 uint32_t ui_theme_color(ui_color_role_t role)
 {
     if ((unsigned)role >= UI_COLOR_COUNT) role = UI_COLOR_TEXT;
@@ -56,12 +43,12 @@ uint32_t ui_theme_color(ui_color_role_t role)
 uint32_t ui_theme_color_on_dark(ui_color_role_t role)
 {
     if ((unsigned)role >= UI_COLOR_COUNT) role = UI_COLOR_TEXT;
-    return s_ui_theme == UI_THEME_PLAYFUL ? s_playful_dark[role] : ui_theme_color(role);
+    return ui_theme_color(role);
 }
 uint32_t ui_theme_portrait_color(uint8_t level)
 {
     const uint32_t bg = ui_theme_color_on_dark(UI_COLOR_BG);
-    const uint32_t fg = s_ui_theme == UI_THEME_PLAYFUL ? 0xF1EEE6 : ui_theme_color_on_dark(UI_COLOR_TEXT);
+    const uint32_t fg = ui_theme_color_on_dark(UI_COLOR_TEXT);
     if (level > 3) level = 3;
     uint32_t color = 0;
     for (int shift = 0; shift <= 16; shift += 8) {
@@ -74,8 +61,7 @@ uint32_t ui_theme_portrait_subject_color(uint8_t level)
 {
     static const uint32_t colors[UI_THEME_COUNT][4] = {
         {0x254D36, 0x4B8060, 0x80B795, 0xA8EDBB},
-        {0x484D43, 0x797D69, 0xB6B7A0, 0xEEE7D6},
-        {0x374543, 0x637771, 0xADBFB1, 0xF1EEE6},
+        {0x1E2050, 0x2A7A80, 0x63AEB2, 0x9EF0F2},
         {0x343C55, 0x657593, 0xB3C5D8, 0xF4F4F6},
     };
     return colors[s_ui_theme][level > 3 ? 3 : level];
@@ -83,8 +69,7 @@ uint32_t ui_theme_portrait_subject_color(uint8_t level)
 const char *ui_theme_name(ui_theme_t theme)
 {
     switch (theme) {
-        case UI_THEME_TRAVEL: return "Travel Kit";
-        case UI_THEME_PLAYFUL: return "Pixel White";
+        case UI_THEME_PROMPT: return "Prompt Teal";
         case UI_THEME_NEON: return "Neon Black";
         default: return "Classic Green";
     }

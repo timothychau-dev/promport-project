@@ -9,9 +9,8 @@ extern "C" {
 
 typedef enum {
     UI_THEME_CLASSIC = 0,
-    UI_THEME_TRAVEL = 1,
-    UI_THEME_PLAYFUL = 2,
-    UI_THEME_NEON = 3,
+    UI_THEME_PROMPT = 1,
+    UI_THEME_NEON = 2,
     UI_THEME_COUNT,
 } ui_theme_t;
 
@@ -63,7 +62,7 @@ const char *ui_theme_name(ui_theme_t theme);
 
 #define UI_SKY        UI_BG
 #define UI_SKY_DARK   (ui_theme_is_multicolor() ? UI_SECONDARY : UI_ACCENT)
-#define UI_INK        (ui_theme_get() == UI_THEME_PLAYFUL ? UI_TEXT : UI_ON_ACCENT)
+#define UI_INK        UI_ON_ACCENT
 #define UI_PAPER      UI_SURFACE
 #define UI_GRASS      UI_SUCCESS
 #define UI_GRASS_DARK UI_SUCCESS
