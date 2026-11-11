@@ -48,17 +48,21 @@ static void portraits(void) {
     FILE *f=fopen(SPIFFS_BASE "/portrait.bin","wb");assert(f);
     assert(fwrite(legacy,1,sizeof(legacy),f)==sizeof(legacy));fclose(f);
     assert(home_profile_has_avatar());assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK);
-    for(size_t i=0;i<HOME_PORTRAIT_W*HOME_PORTRAIT_H;i++)
-        assert(home_portrait_index(readback,i)==((legacy[i/8]&(128>>(i%8)))?3:0));
+    for(size_t i=0;i<HOME_PORTRAIT_W*HOME_PORTRAIT_H;i++) {
+        size_t x=i%HOME_PORTRAIT_W,y=i/HOME_PORTRAIT_W;
+        size_t p=(y*HOME_PORTRAIT_LEGACY_H/HOME_PORTRAIT_H)*HOME_PORTRAIT_LEGACY_W
+            + x*HOME_PORTRAIT_LEGACY_W/HOME_PORTRAIT_W;
+        assert(home_portrait_index(readback,i)==((legacy[p/8]&(128>>(p%8)))?3:0));
+    }
     assert(home_profile_read_avatar(readback,sizeof(readback)-1)==ESP_ERR_INVALID_ARG);
     for(size_t i=0;i<sizeof(data);i++)data[i]=(uint8_t)i;
     home_portrait_init_header(data,3);
     assert(home_profile_write_avatar_chunk(data,97,true,false,sizeof(data))==ESP_OK);
     home_profile_abort_avatar_upload();assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK);
-    assert(readback[HOME_PORTRAIT_HEADER_BYTES]==0xcc);
+    assert(readback[HOME_PORTRAIT_HEADER_BYTES]==0xf3);
     fail_commit=true;
     assert(home_profile_write_avatar_chunk(data,sizeof(data),true,true,sizeof(data))==ESP_FAIL);
-    assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&readback[HOME_PORTRAIT_HEADER_BYTES]==0xcc);fail_commit=false;
+    assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&readback[HOME_PORTRAIT_HEADER_BYTES]==0xf3);fail_commit=false;
     for(size_t i=0;i<sizeof(data);i+=97){size_t n=sizeof(data)-i;if(n>97)n=97;
         assert(home_profile_write_avatar_chunk(data+i,n,i==0,i+n==sizeof(data),sizeof(data))==ESP_OK);}
     assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&!memcmp(data,readback,sizeof(data)));
@@ -69,7 +73,7 @@ static void portraits(void) {
     assert(home_profile_write_avatar_chunk(data,1,false,true,sizeof(data))==ESP_ERR_INVALID_SIZE);
     assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&!memcmp(data,readback,sizeof(data)));
     assert(home_profile_write_avatar_chunk(legacy,sizeof(legacy),true,true,sizeof(legacy))==ESP_OK);
-    home_profile_init();assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&readback[HOME_PORTRAIT_HEADER_BYTES]==0xcc);
+    home_profile_init();assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&readback[HOME_PORTRAIT_HEADER_BYTES]==0xf3);
     uint8_t v2[HOME_AVATAR_V2_BYTES];memset(v2,0x1b,sizeof(v2));
     assert(home_profile_write_avatar_chunk(v2,sizeof(v2),true,true,sizeof(v2))==ESP_OK);
     assert(home_profile_read_avatar(readback,sizeof(readback))==ESP_OK&&readback[4]==0);

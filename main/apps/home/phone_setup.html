@@ -61,7 +61,7 @@ details{border-top:1px solid var(--line);padding:20px 0}summary{cursor:pointer;f
 <label><input type="radio" name="portraitPreset" id="portraitPresetFlat" value="2"><span>Flat</span></label>
 <label><input type="radio" name="portraitPreset" id="portraitPresetHybrid" value="3" checked><span>Flat + dots</span></label>
 </div></fieldset>
-<div class="crop-layout"><div id="vp" style="height:276px"><img id="pv" alt="Portrait framing preview"></div><div><canvas id="binc" width="96" height="138" style="height:138px" aria-label="Device portrait preview"></canvas><p class="caption">On device</p></div></div><label for="zm" class="caption">Zoom portrait</label><input type="range" id="zm" min="100" max="400" value="100"><label for="portraitBrightness" class="caption">Brightness</label><input type="range" id="portraitBrightness" min="-48" max="48" value="0" style="width:100%;min-height:40px"><label><input type="checkbox" id="portraitBackground"> Remove solid background</label></div>
+<div class="crop-layout"><div id="vp" style="height:368px"><img id="pv" alt="Portrait framing preview"></div><div><canvas id="binc" width="128" height="184" style="height:184px" aria-label="Device portrait preview"></canvas><p class="caption">On device</p></div></div><label for="zm" class="caption">Zoom portrait</label><input type="range" id="zm" min="100" max="400" value="100"><label for="portraitBrightness" class="caption">Brightness</label><input type="range" id="portraitBrightness" min="-48" max="48" value="0" style="width:100%;min-height:40px"><label><input type="checkbox" id="portraitBackground"> Remove solid background</label></div>
 <p id="avatarStatus" class="status" role="status"></p></div></details>
 <details id="cardSection"><summary>Color pocket cards<small id="shareState">Up to 6</small></summary><div class="detail-body">
 <p class="help">Save up to 6 cards or QR codes. On the home screen press the up key to open, up/down keys to page, and OK to return. A 3:4 ratio is recommended; keep white margins around QR codes.</p>
@@ -156,7 +156,7 @@ async function connect(saved=false){const ssid=manual?$('ssid').value:$('network
 $('connect').onclick=()=>connect();$('reuse').onclick=()=>connect(true);$('keepSaved').onclick=()=>{$('connectionSummary').textContent='Profile only; saved network reconnects when finished';step(2)};$('back').onclick=()=>step(1);
 
 // Portrait cropping happens on the phone, preserving the device's small memory budget.
-const VP={w:192,h:276},PORTRAIT={w:96,h:138};let portraitPalette=[0x03120b,0x3a5b45,0x719c80,0xa8edbb],portraitSubjectPalette=[0x254d36,0x4b8060,0x80b795,0xa8edbb];let zoom=1,ox=0,oy=0,base=1,portrait=null,shareImg=null,imageLoading=0,portraitPreset=3,portraitSampleCache=null,portraitPreparedCache=null;
+const VP={w:256,h:368},PORTRAIT={w:128,h:184};let portraitPalette=[0x03120b,0x3a5b45,0x719c80,0xa8edbb],portraitSubjectPalette=[0x254d36,0x4b8060,0x80b795,0xa8edbb];let zoom=1,ox=0,oy=0,base=1,portrait=null,shareImg=null,imageLoading=0,portraitPreset=3,portraitSampleCache=null,portraitPreparedCache=null;
 const CARD_MAX=6,CARD_BYTES=24576;let cards=[],cardsDirty=false,cardsReady=false,cardBusy=false,replaceSlot=null,cardStorage=null;
 function clamp(){if(!portrait)return;const s=base*zoom;ox=Math.min(0,Math.max(VP.w-portrait.naturalWidth*s,ox));oy=Math.min(0,Math.max(VP.h-portrait.naturalHeight*s,oy));$('pv').style.width=portrait.naturalWidth*s+'px';$('pv').style.left=ox+'px';$('pv').style.top=oy+'px'}
 function portraitPixels(){

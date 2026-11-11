@@ -57,7 +57,7 @@ const posts=()=>requests.filter(r=>r.options.method==='POST');
  get('shareFile').files=[{size:1000}];await get('shareFile').onchange();
  failShare=true;await get('save').onclick();assert.equal(posts().filter(r=>r.url.startsWith('/api/finish')).length,0,'failed image must not close hotspot');assert.equal(get('save').disabled,false);
  req=posts().find(r=>r.url.startsWith('/api/profile'));let profile=JSON.parse(req.options.body);assert.equal(profile.name,'新名字');assert.equal(profile.address,'','address field removed');assert.equal(profile.city,'','city selection removed');assert.equal(profile.lat,'','device requires these keys as empty strings');assert.equal(profile.region,'');assert.equal(profile.radio_city,'');
- req=posts().find(r=>r.url.startsWith('/api/avatar'));assert.equal(req.options.body.byteLength,4976);assert.equal(req.options.body[4],3);
+ req=posts().find(r=>r.url.startsWith('/api/avatar'));assert.equal(req.options.body.byteLength,8840);assert.equal(req.options.body[4],3);
  // Failed avatar uploads retain the page and pending image for a later retry.
  for(const [code,message] of [['avatar_size',/length mismatch/],['avatar_recv',/transfer interrupted/],['avatar_store',/avatar is kept/]]){
   avatarError=code;const finishesBefore=posts().filter(r=>r.url.startsWith('/api/finish')).length;
@@ -66,7 +66,7 @@ const posts=()=>requests.filter(r=>r.options.method==='POST');
   assert.equal(get('save').disabled,false);assert.equal(get('back').disabled,false);
  }
  avatarDeviceCode='ESP_ERR_NO_MEM';await get('save').onclick();assert.match(get('saveStatus').textContent,/Not enough device memory/);
- await assert.rejects(context.api('/api/avatar',new Uint8Array(4976)),error=>error.path==='/api/avatar'&&error.code==='avatar_store'&&error.deviceCode==='ESP_ERR_NO_MEM');
+ await assert.rejects(context.api('/api/avatar',new Uint8Array(8840)),error=>error.path==='/api/avatar'&&error.code==='avatar_store'&&error.deviceCode==='ESP_ERR_NO_MEM');
  avatarError='';avatarDeviceCode='ESP_FAIL';
  const writesBeforePreset=posts().length;
  for(const [id,preset] of [['portraitPresetDot',1],['portraitPresetFlat',2],['portraitPresetHybrid',3]]){get(id).checked=true;get(id).onchange();assert.equal(context.portraitPacked()[4],preset)}
@@ -109,7 +109,7 @@ const posts=()=>requests.filter(r=>r.options.method==='POST');
  imageMode='ok';await get('fileFallback').onchange();
  assert.match(get('avatarStatus').textContent,/Selected/,'retry recovers after decode timeout');
  await get('save').onclick();assert.equal(get('step3').hidden,false);
- assert.equal(posts().filter(r=>r.url.startsWith('/api/avatar')).at(-1).options.body.byteLength,4976);
+ assert.equal(posts().filter(r=>r.url.startsWith('/api/avatar')).at(-1).options.body.byteLength,8840);
  assert.equal(posts().filter(r=>r.url.startsWith('/api/share')).at(-1).options.body.type,'image/jpeg');
  // Real gallery state: compressed blobs only, stable slots, order/delete and retry.
  await context.loadCards();

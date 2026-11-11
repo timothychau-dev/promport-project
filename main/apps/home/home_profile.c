@@ -329,14 +329,25 @@ esp_err_t home_profile_read_avatar(uint8_t *dst, size_t cap) {
     uint8_t *tones = dst + HOME_PORTRAIT_HEADER_BYTES;
     if (st.st_size == HOME_AVATAR_V2_BYTES) got = fread(tones, 1, HOME_AVATAR_V2_BYTES, fp);
     else {
-        // Preserve the visible rows of existing 96x150 portraits without changing their pixels.
+        // Map legacy 96x150 frames onto the current canvas, nearest neighbour,
+        // so old uploads stay recognizable without changing the storage format.
+        uint8_t legacy[HOME_AVATAR_LEGACY_BYTES];
+        if (fread(legacy, 1, sizeof(legacy), fp) != sizeof(legacy)) {
+            fclose(fp);
+            ESP_LOGW(TAG, "Avatar short read: %u/%u", (unsigned)got, (unsigned)sizeof(legacy));
+            return ESP_FAIL;
+        }
+        got = 0;
         for (int y = 0; y < HOME_PORTRAIT_H; ++y) {
-            uint8_t row[HOME_PORTRAIT_W / 8];
-            if (fread(row, 1, sizeof(row), fp) != sizeof(row)) break;
+            const uint16_t sy = (uint16_t)((uint32_t)y * HOME_PORTRAIT_LEGACY_H / HOME_PORTRAIT_H);
+            const uint16_t row = (uint16_t)(sy * HOME_PORTRAIT_LEGACY_W);
             for (int x = 0; x < HOME_PORTRAIT_W; x += 4) {
                 uint8_t value = 0;
-                for (int i = 0; i < 4; ++i)
-                    if (row[(x+i)/8] & (128 >> ((x+i)%8))) value |= 3 << (6-2*i);
+                for (int i = 0; i < 4; ++i) {
+                    const uint16_t sx = (uint16_t)((uint32_t)(x + i) * HOME_PORTRAIT_LEGACY_W / HOME_PORTRAIT_W);
+                    const uint16_t pixel = row + sx;
+                    if (legacy[pixel / 8] & (128 >> (pixel % 8))) value |= 3 << (6 - 2 * i);
+                }
                 tones[got++] = value;
             }
         }

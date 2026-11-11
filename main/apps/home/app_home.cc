@@ -387,8 +387,8 @@ void create_ui() {
     // ---- 状态栏 (y0..24):Wi-Fi 信号 + 时间 + 电池,与各场景统一 ----
     ui_pixel_status_bar(s_screen, kPhos, &s_batt, s_wifi_bars, &s_lbl_clock);
 
-    // ---- 主区:头像 96×138 居中,姓名 + 签名居中在下 ----
-    lv_obj_t *zone = px_container(s_screen, (240 - HOME_PORTRAIT_W) / 2, 76,
+    // ---- 主区:头像 128×184 居中(96:138 同比例放大 4/3),姓名 + 签名居中在下 ----
+    lv_obj_t *zone = px_container(s_screen, (240 - HOME_PORTRAIT_W) / 2, 36,
                                   HOME_PORTRAIT_W, HOME_PORTRAIT_H);
     lv_obj_set_style_border_width(zone, 0, 0);
     lv_obj_set_style_bg_opa(zone, LV_OPA_TRANSP, 0);
@@ -401,7 +401,7 @@ void create_ui() {
     lv_obj_set_style_image_recolor_opa(s_avatar_img, LV_OPA_TRANSP, 0);
 
     s_portrait_ph = make_label(zone, &buddy_font_16, kPhosDim, LV_TEXT_ALIGN_CENTER);
-    lv_obj_set_width(s_portrait_ph, 92);
+    lv_obj_set_width(s_portrait_ph, 120);
     lv_obj_align(s_portrait_ph, LV_ALIGN_CENTER, 0, 0);
     lv_label_set_text(s_portrait_ph, "No avatar");
 

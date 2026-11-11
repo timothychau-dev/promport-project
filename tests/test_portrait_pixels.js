@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync('main/apps/home/phone_setup.html','utf8');
 const algorithm=html.slice(html.indexOf('function portraitLocalContrast('),html.indexOf('async function imageFile('));
 const elements={portraitBackground:{checked:false},portraitBrightness:{value:'0'},portraitPresetDot:{},portraitPresetFlat:{},portraitPresetHybrid:{}};
-const context=vm.createContext({$:id=>elements[id],PORTRAIT:{w:96,h:138},portrait:null,portraitPreset:3,portraitPreparedCache:null,portraitPalette:[0,1,2,255],portraitSubjectPalette:[30,90,170,255],fixture:null});
+const context=vm.createContext({$:id=>elements[id],PORTRAIT:{w:128,h:184},portrait:null,portraitPreset:3,portraitPreparedCache:null,portraitPalette:[0,1,2,255],portraitSubjectPalette:[30,90,170,255],fixture:null});
 vm.runInContext(algorithm,context);
 function rgba(values){return Uint8ClampedArray.from(values.flatMap(v=>[v,v,v,255]))}
 const tones=rgba([0,80,150,255]);
@@ -22,24 +22,24 @@ for(const preset of [1,2,3]){
  const high=context.portraitLevels(tones,4,1,false,48,preset).levels;
  assert.ok(high.every((v,i)=>v>=low[i]));
 }
-context.fixture=rgba(Array.from({length:96*138},(_,i)=>i%256));
+context.fixture=rgba(Array.from({length:128*184},(_,i)=>i%256));
 context.fixture[3]=0;context.fixture.set([0,0,0,255],4);
 vm.runInContext('function portraitPixels(){return fixture}',context);
 const variants=[];
 for(const preset of [1,2,3]){
  context.setPortraitPreset(preset);
  const packed=context.portraitPacked();variants.push(Buffer.from(packed));
- assert.equal(packed.length,4976);
+ assert.equal(packed.length,8840);
  assert.deepEqual(Array.from(packed.slice(0,8)),[80,84,51,53,preset,0,0,0]);
- assert.equal(packed[8+3312]&128,0);assert.ok(packed[8+3312]&64);
+ assert.equal(packed[8+5888]&128,0);assert.ok(packed[8+5888]&64);
  assert.equal(context.portraitColor(packed,0),0,'transparent pixel uses homepage background');
  if(preset!==1)assert.equal(context.portraitColor(packed,1),30,'opaque black uses the darkest subject color');
- const levels=Array.from({length:96*138},(_,p)=>(packed[8+(p>>2)]>>(6-2*(p&3)))&3);
+ const levels=Array.from({length:128*184},(_,p)=>(packed[8+(p>>2)]>>(6-2*(p&3)))&3);
  assert.ok(levels.every(v=>preset!==1||v===0||v===3));
  assert.deepEqual(Array.from(context.portraitPacked()),Array.from(packed),'preview and save are deterministic');
 }
 assert.notDeepEqual(variants[0],variants[1]);
 assert.notDeepEqual(variants[1].subarray(8),variants[2].subarray(8),'hybrid changes actual pixels');
-assert.deepEqual(variants[1].subarray(8+3312),variants[2].subarray(8+3312),'presets share one silhouette');
+assert.deepEqual(variants[1].subarray(8+5888),variants[2].subarray(8+5888),'presets share one silhouette');
 context.setPortraitPreset(999);assert.equal(elements.portraitPresetHybrid.checked,true);
 console.log('Portrait presets: three distinct renders, masks, dark foreground, brightness, header and packing: PASS');
