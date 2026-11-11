@@ -39,8 +39,6 @@ What I actually did on top of upstream:
 
 The Presenter app comes unchanged from [ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt) — a Bluedroid + `esp_hid` BLE HID keyboard (`PPT-Remote`) for the same FoloToy AI Passport hardware, tested against PowerPoint and Keynote, with a talk timer, slideshow-start shortcut, and a pairing-reset combo. Together with the Profile home it covers the full event flow: the device introduces you on stage, then becomes your clicker for the slides.
 
-Don't prompt alone, prompt together.
-
 ## Upstream
 
 Everything here is built on the excellent work of the [Passport OS](https://github.com/manchunx7-bit/passport-os) community firmware — see that repo for the full 10-app original, related projects (Muse, AI voice input), and community install guides. The Presenter app is ported from [YeatsLiao/ai-passport-ppt](https://github.com/YeatsLiao/ai-passport-ppt).
