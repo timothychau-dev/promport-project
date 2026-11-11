@@ -387,16 +387,18 @@ void create_ui() {
     // ---- 状态栏 (y0..24):Wi-Fi 信号 + 时间 + 电池,与各场景统一 ----
     ui_pixel_status_bar(s_screen, kPhos, &s_batt, s_wifi_bars, &s_lbl_clock);
 
-    // ---- 主区:头像 96×138 居中,姓名 + 签名居中在下 ----
-    lv_obj_t *zone = px_container(s_screen, (240 - HOME_PORTRAIT_W) / 2, 76,
-                                  HOME_PORTRAIT_W, HOME_PORTRAIT_H);
+    // ---- 主区:头像 96×138 居中放大 1.25×(120×173),姓名 + 签名居中在下 ----
+    lv_obj_t *zone = px_container(s_screen, (240 - 120) / 2, 50,
+                                  120, 173);
     lv_obj_set_style_border_width(zone, 0, 0);
     lv_obj_set_style_bg_opa(zone, LV_OPA_TRANSP, 0);
 
     s_avatar_img = lv_image_create(zone);
-    lv_obj_set_pos(s_avatar_img, 0, 0);
+    lv_obj_set_pos(s_avatar_img, 12, 17);
     lv_obj_set_size(s_avatar_img, HOME_PORTRAIT_W, HOME_PORTRAIT_H);
     lv_image_set_inner_align(s_avatar_img, LV_IMAGE_ALIGN_CENTER);
+    lv_image_set_pivot(s_avatar_img, HOME_PORTRAIT_W / 2, HOME_PORTRAIT_H / 2);
+    lv_image_set_scale(s_avatar_img, 320);
     // A8 alpha 图以 recolor 色实心填充(LVGL 软渲染快速路径,已核对 lv_draw_sw_img.c)
     lv_obj_set_style_image_recolor_opa(s_avatar_img, LV_OPA_TRANSP, 0);
 
