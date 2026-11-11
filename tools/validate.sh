@@ -43,7 +43,7 @@ run_firmware_checks() (
     SDKCONFIG_DEFAULTS="${repo_root}/sdkconfig.defaults" \
         idf.py -B "${validation_build_dir}" \
         -D "SDKCONFIG=${validation_build_dir}/sdkconfig" \
-        -D PASSPORT_PUBLIC_RELEASE=ON -D PASSPORT_MUSE_USE_JOLLYBOT=ON build
+        -D PASSPORT_PUBLIC_RELEASE=ON build
     idf.py -B "${validation_build_dir}" merge-bin \
         -o "${validation_build_dir}/FoloToy-AI-Passport-full.bin"
     python3 tools/verify_firmware.py "${validation_build_dir}" --public

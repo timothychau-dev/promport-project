@@ -28,17 +28,11 @@
 static const char *TAG = "app_registry";
 
 // 外部 App 实例前向声明
-extern const passport_app_t g_radio_app;
-extern const passport_app_t g_voice_app;
-extern const passport_app_t g_xiaozhi_app;
 extern const passport_app_t g_wifi_app;
 extern const passport_app_t g_settings_app;
 extern const passport_app_t g_home_app;
-extern const passport_app_t g_game_app;
-extern const passport_app_t g_tetris_app;
 extern const passport_app_t g_stopwatch_app;
-extern const passport_app_t g_sound_jump_app;
-extern const passport_app_t g_muse_app;
+extern const passport_app_t g_presenter_app;
 extern const passport_app_t g_pomodoro_app;
 
 namespace {
@@ -48,13 +42,7 @@ namespace {
 // app_registry_get_by_id() 单独寻址,这样 switch_to(APP_ID_HOME) 才不会找不到而黑屏。
 // AI设备(AI设备/Codex 陪伴精灵)已于 2026-09-12 移除,见 docs/app-review-2026-09-12.md。
 const passport_app_t *s_apps[] = {
-    &g_radio_app,
-    &g_voice_app,
-    &g_xiaozhi_app,
-    &g_muse_app,
-    &g_game_app,
-    &g_sound_jump_app,
-    &g_tetris_app,
+    &g_presenter_app,
     &g_stopwatch_app,
     &g_pomodoro_app,
     &g_settings_app,   // 设置放最后(应用惯用收尾位置)
@@ -63,7 +51,7 @@ const passport_app_t *s_apps[] = {
 constexpr size_t kAppCount = sizeof(s_apps) / sizeof(s_apps[0]);
 bool feedback_allowed(passport_app_id_t id) {
     return id == APP_ID_HOME || id == APP_ID_LAUNCHER || id == APP_ID_SETTINGS ||
-           id == APP_ID_WIFI || id == APP_ID_STOPWATCH || id == APP_ID_POMODORO || id == APP_ID_TETRIS;
+           id == APP_ID_WIFI || id == APP_ID_STOPWATCH || id == APP_ID_POMODORO;
 }
 std::atomic<passport_app_id_t> s_active_id{APP_ID_LAUNCHER};
 wake_gate_t s_wake_gate{};
@@ -93,18 +81,11 @@ struct SwitchGuard {
 // 桌面/首页/设置等待机前台放宽到 MAX modem sleep(下行延迟可到 ~1s,对
 // 天气/SNTP/上传服务无感),是待机电流的最大单项优化。
 WifiPowerSaveLevel power_save_level_for(passport_app_id_t id) {
-    switch (id) {
-        case APP_ID_RADIO:
-        case APP_ID_VOICE:
-        case APP_ID_XIAOZHI:
-        case APP_ID_MUSE:
-            return WifiPowerSaveLevel::BALANCED;
-        default:
-            return WifiPowerSaveLevel::LOW_POWER;
-    }
+    (void)id;
+    return WifiPowerSaveLevel::LOW_POWER;
 }
 
-// 收音机/小智/Muse 的 TLS、解码与音频缓冲需要大块连续内存。C3 无 PSRAM,
+// 收音机/小智 的 TLS、解码与音频缓冲需要大块连续内存。C3 无 PSRAM,
 // 这些应用退出后残留的小块(lwIP、Wi-Fi、启动器界面)会把堆切碎,再次进入时
 // 总量够而最大连续块不够,表现为连接失败或运行中崩溃。碎片无法原地整理:
 // 只有当前堆确实放不下目标应用,或上一次重型会话已出现过分配失败时,
@@ -117,14 +98,10 @@ struct HeapNeed {
     size_t free;    // 整个会话的总占用加余量
 };
 // rc.51 实测(堆追踪诊断版):收音机 MP3 解码器一次申请约 22.9 KiB,会话约占 34 KiB;
-// 小智最大单块 12 KiB(任务栈),会话约占 30 KiB;Muse 工作任务栈 12 KiB 加 TLS 8 KiB。
+// 小智最大单块 12 KiB(任务栈),会话约占 30 KiB。
 HeapNeed heap_need(passport_app_id_t id) {
-    switch (id) {
-        case APP_ID_RADIO: return {24 * 1024, 48 * 1024};
-        case APP_ID_XIAOZHI: return {16 * 1024, 44 * 1024};
-        case APP_ID_MUSE: return {20 * 1024, 44 * 1024};
-        default: return {0, 0};
-    }
+    (void)id;
+    return {0, 0};
 }
 
 // 进入重型应用时记下分配失败计数;离开时若计数增加,说明该会话已在缺内存
@@ -135,7 +112,8 @@ bool s_heap_strained = false;
 bool s_fresh_heap = false;
 
 bool heavy_app(passport_app_id_t id) {
-    return id == APP_ID_RADIO || id == APP_ID_XIAOZHI || id == APP_ID_MUSE;
+    (void)id;
+    return false;
 }
 
 // 在旧应用 stop() 之后调用:此时测到的才是新应用可用的堆。
@@ -260,7 +238,7 @@ void show_clean_launch_notice(passport_app_id_t id) {
         lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
         lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
         char text[64];
-        snprintf(text, sizeof(text), "正在整理内存\n马上打开 %s", app ? app->name : "应用");
+        snprintf(text, sizeof(text), "Tidying memory\nOpening %s", app ? app->name : "Apps");
         lv_obj_t *label = ui_pixel_label(screen, text, &buddy_font_16, UI_TEXT);
         lv_obj_set_width(label, 216);
         lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
@@ -318,7 +296,8 @@ passport_app_id_t app_registry_take_clean_launch(void) {
     const uint32_t magic = s_clean_launch[0];
     const auto id = static_cast<passport_app_id_t>(s_clean_launch[1] ^ kCleanLaunchMagic);
     s_clean_launch[0] = s_clean_launch[1] = 0; // 一次性:目标应用崩溃时下次开机回首页
-    if (magic != kCleanLaunchMagic || esp_reset_reason() != ESP_RST_SW || !heavy_app(id))
+    if (magic != kCleanLaunchMagic || esp_reset_reason() != ESP_RST_SW ||
+        id <= APP_ID_LAUNCHER || id >= APP_ID_COUNT)
         return APP_ID_COUNT;
     s_fresh_heap = true;
     return id;

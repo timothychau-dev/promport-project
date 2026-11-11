@@ -1,5 +1,6 @@
 // main/ui/ui_pixel.c —— 全机共享的像素风设计系统实现。见 ui_pixel.h。
 #include "ui_pixel.h"
+#include "common/time_sync.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -82,10 +83,10 @@ uint32_t ui_theme_portrait_subject_color(uint8_t level)
 const char *ui_theme_name(ui_theme_t theme)
 {
     switch (theme) {
-        case UI_THEME_TRAVEL: return "旅行仪器";
-        case UI_THEME_PLAYFUL: return "像素白";
-        case UI_THEME_NEON: return "霓虹黑";
-        default: return "经典绿";
+        case UI_THEME_TRAVEL: return "Travel Kit";
+        case UI_THEME_PLAYFUL: return "Pixel White";
+        case UI_THEME_NEON: return "Neon Black";
+        default: return "Classic Green";
     }
 }
 
@@ -350,6 +351,29 @@ lv_obj_t *ui_pixel_top_bar(lv_obj_t *parent)
         lv_obj_set_style_bg_color(bar, lv_color_hex(UI_BG), 0);
     }
     return bar;
+}
+
+lv_obj_t *ui_pixel_status_bar(lv_obj_t *parent, uint32_t color,
+                              ui_pixel_battery_t *batt_out,
+                              lv_obj_t *bars_out[3], lv_obj_t **clock_out)
+{
+    lv_obj_t *top = ui_pixel_top_bar(parent);
+    ui_pixel_wifi_bars_create(top, 12, 18, bars_out);
+    lv_obj_t *clock = ui_pixel_label(top, "--:--", &lv_font_montserrat_14, UI_TEXT);
+    ui_pixel_status_text_align(clock, 92, 56, LV_TEXT_ALIGN_CENTER);
+    if (clock_out) *clock_out = clock;
+    if (batt_out)
+        *batt_out = ui_pixel_battery_create(top, 206, 6, color,
+                                            &lv_font_montserrat_14);
+    return top;
+}
+
+void ui_pixel_status_clock_set(lv_obj_t *clock_label)
+{
+    if (!clock_label) return;
+    char time[8];
+    time_sync_format_local(time, sizeof(time));
+    ui_pixel_label_set_text(clock_label, time);
 }
 
 void ui_pixel_status_text_align(lv_obj_t *label, int x, int width,

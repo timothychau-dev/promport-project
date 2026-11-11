@@ -105,13 +105,13 @@ int main(int argc,char **argv) {
         const uint32_t stamp=weather.updated_at;
         home_weather_init();assert(home_weather_get(&weather)&&weather.updated_at==stamp);
         char age[24];
-        home_weather_age_text(stamp,stamp+30,age,sizeof(age));assert(!strcmp(age,"刚刚"));
-        home_weather_age_text(stamp,stamp+25*60,age,sizeof(age));assert(!strcmp(age,"25分钟前"));
-        home_weather_age_text(stamp,stamp+3*3600+5,age,sizeof(age));assert(!strcmp(age,"3小时前"));
-        home_weather_age_text(stamp,stamp+2*86400,age,sizeof(age));assert(!strcmp(age,"2天前"));
-        home_weather_age_text(0,stamp,age,sizeof(age));assert(!strcmp(age,"离线数据"));
-        home_weather_age_text(stamp,0,age,sizeof(age));assert(!strcmp(age,"离线数据"));
-        home_weather_age_text(stamp,stamp-100,age,sizeof(age));assert(!strcmp(age,"刚刚"));
+        home_weather_age_text(stamp,stamp+30,age,sizeof(age));assert(!strcmp(age,"Just now"));
+        home_weather_age_text(stamp,stamp+25*60,age,sizeof(age));assert(!strcmp(age,"25m ago"));
+        home_weather_age_text(stamp,stamp+3*3600+5,age,sizeof(age));assert(!strcmp(age,"3h ago"));
+        home_weather_age_text(stamp,stamp+2*86400,age,sizeof(age));assert(!strcmp(age,"2d ago"));
+        home_weather_age_text(0,stamp,age,sizeof(age));assert(!strcmp(age,"Offline"));
+        home_weather_age_text(stamp,0,age,sizeof(age));assert(!strcmp(age,"Offline"));
+        home_weather_age_text(stamp,stamp-100,age,sizeof(age));assert(!strcmp(age,"Just now"));
     }
     // The device follows the city's UTC offset (India +5:30); junk offsets are ignored.
     weather_response="{\"utc_offset_seconds\":19800,\"current\":{\"temperature_2m\":30,\"weather_code\":0,\"relative_humidity_2m\":50,\"wind_speed_10m\":5,\"wind_direction_10m\":90}}";

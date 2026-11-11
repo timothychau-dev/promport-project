@@ -54,5 +54,5 @@ void system_overlay_hide(void) {
 }
 
 extern "C" void passport_internet_notice(bool captive) {
-    system_overlay_show(captive ? "该网络需网页登录" : "该网络无法上网", 5000);
+    system_overlay_show(captive ? "Portal login needed" : "No internet access", 5000);
 }

@@ -1,6 +1,6 @@
 #include "apps/home/home_weather.h"
 #include "apps/home/home_profile.h"
-#include "apps/voice/time_sync.h"
+#include "common/time_sync.h"
 
 #include "esp_http_client.h"
 #include "esp_crt_bundle.h"
@@ -132,25 +132,25 @@ uint32_t home_weather_version(void) {
 
 const char *home_weather_code_text(uint16_t code) {
     // 短语只由 buddy 字体已有的字组成(雨雪雾雷冰雹晴阴多云大小中等均已验证)
-    if (code == 0 || code == 1) return "晴";
-    if (code == 2) return "多云";
-    if (code == 3) return "阴";
-    if (code == 45 || code == 48) return "雾";
-    if (code >= 51 && code <= 55) return "毛毛雨";
-    if (code == 56 || code == 57) return "冻雨";
-    if (code == 61) return "小雨";
-    if (code == 63) return "中雨";
-    if (code == 65) return "大雨";
-    if (code == 66 || code == 67) return "冻雨";
-    if (code == 71 || code == 77) return "小雪";
-    if (code == 73) return "中雪";
-    if (code == 75) return "大雪";
-    if (code == 80 || code == 81) return "阵雨";
-    if (code == 82) return "强阵雨";
-    if (code == 85 || code == 86) return "阵雪";
-    if (code == 95) return "雷雨";
-    if (code == 96 || code == 99) return "雷雨冰雹";
-    return "未知";
+    if (code == 0 || code == 1) return "Sunny";
+    if (code == 2) return "Cloudy";
+    if (code == 3) return "Overcast";
+    if (code == 45 || code == 48) return "Fog";
+    if (code >= 51 && code <= 55) return "Drizzle";
+    if (code == 56 || code == 57) return "Sleet";
+    if (code == 61) return "Light rain";
+    if (code == 63) return "Rain";
+    if (code == 65) return "Heavy rain";
+    if (code == 66 || code == 67) return "Sleet";
+    if (code == 71 || code == 77) return "Light snow";
+    if (code == 73) return "Snow";
+    if (code == 75) return "Heavy snow";
+    if (code == 80 || code == 81) return "Showers";
+    if (code == 82) return "Heavy showers";
+    if (code == 85 || code == 86) return "Snow showers";
+    if (code == 95) return "T-storms";
+    if (code == 96 || code == 99) return "T-storm hail";
+    return "Unknown";
 }
 
 static void persist_cache(const home_weather_t *weather, const char *lat, const char *lon) {
@@ -180,8 +180,8 @@ int home_weather_beaufort(uint8_t wind_kmh) {
 // 风向 16 点位就近归到 8 方位(北=0°,顺时针)。字形 东南西北风无 均在 buddy 字库内。
 const char *home_weather_wind_dir_text(uint16_t deg) {
     static const char *kDirs[8] = {
-        "北风", "东北风", "东风", "东南风",
-        "南风", "西南风", "西风", "西北风",
+        "N", "NE", "E", "SE",
+        "S", "SW", "W", "NW",
     };
     return kDirs[((deg + 23) % 360) / 45];
 }
@@ -189,14 +189,14 @@ const char *home_weather_wind_dir_text(uint16_t deg) {
 void home_weather_age_text(uint32_t updated_at, int64_t now, char *out, size_t capacity) {
     if (!out || !capacity) return;
     if (updated_at < EPOCH_VALID_MIN || now < EPOCH_VALID_MIN) {
-        snprintf(out, capacity, "离线数据");
+        snprintf(out, capacity, "Offline");
         return;
     }
     const int64_t age = now > (int64_t)updated_at ? now - (int64_t)updated_at : 0;
-    if (age < 120) snprintf(out, capacity, "刚刚");
-    else if (age < 3600) snprintf(out, capacity, "%d分钟前", (int)(age / 60));
-    else if (age < 86400) snprintf(out, capacity, "%d小时前", (int)(age / 3600));
-    else snprintf(out, capacity, "%d天前", (int)(age / 86400 > 99 ? 99 : age / 86400));
+    if (age < 120) snprintf(out, capacity, "Just now");
+    else if (age < 3600) snprintf(out, capacity, "%dm ago", (int)(age / 60));
+    else if (age < 86400) snprintf(out, capacity, "%dh ago", (int)(age / 3600));
+    else snprintf(out, capacity, "%dd ago", (int)(age / 86400 > 99 ? 99 : age / 86400));
 }
 
 // 坐标所在地的 UTC 偏移(timezone=auto 时返回,含夏令时):设备时区跟着城市走,

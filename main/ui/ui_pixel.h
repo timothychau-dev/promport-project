@@ -54,7 +54,9 @@ lv_obj_t *ui_pixel_hint_pill(lv_obj_t *parent, const char *text,
 // 对齐即垂直居中。
 lv_obj_t *ui_pixel_top_bar(lv_obj_t *parent);
 
+
 // Battery text starts at x=160; keep other status content before x=156.
+
 enum { UI_STATUS_CONTENT_RIGHT = 156, UI_STATUS_BATTERY_LEFT = 160 };
 void ui_pixel_status_text_align(lv_obj_t *label, int x, int width,
                                 lv_text_align_t align);
@@ -65,6 +67,14 @@ typedef struct {
     lv_obj_t *fill;
     lv_obj_t *label;
 } ui_pixel_battery_t;
+
+// 统一状态栏:Wi-Fi 信号(左 12) + 时间(中) + 电池(右 206),仅此三项。
+// 各场景(启动器/首页/秒表/Prompter/番茄钟/设置/收音机)一律用它,
+// clock_out 用 ui_pixel_status_clock_set() 按分钟刷新。
+lv_obj_t *ui_pixel_status_bar(lv_obj_t *parent, uint32_t color,
+                              ui_pixel_battery_t *batt_out,
+                              lv_obj_t *bars_out[3], lv_obj_t **clock_out);
+void ui_pixel_status_clock_set(lv_obj_t *clock_label);
 ui_pixel_battery_t ui_pixel_battery_create(lv_obj_t *parent, int x, int y,
                                            uint32_t frame_color,
                                            const lv_font_t *font);

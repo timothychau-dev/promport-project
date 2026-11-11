@@ -1,6 +1,6 @@
 // Application drawer: shared phosphor palette and pixel icons.
 #include "launcher/launcher.h"
-#include "apps/voice/time_sync.h"
+#include "common/time_sync.h"
 #include "launcher/app_registry.h"
 #include "wifi_manager.h"
 #include "ssid_manager.h"
@@ -80,8 +80,8 @@ const char *app_chinese_name(passport_app_id_t id) {
         return app->name;
     }
     switch (id) {
-        case APP_ID_WIFI: return "无线网络";
-        case APP_ID_SETTINGS: return "设置";
+        case APP_ID_WIFI: return "Wi-Fi";
+        case APP_ID_SETTINGS: return "Settings";
         default: return "";
     }
 }
@@ -153,44 +153,15 @@ void draw_app_icon(passport_app_id_t id, uint32_t color) {
             set_part(4, 40, 50, 10, 22, color);   // 门
             set_part(5, 26, 44, 8, 8, color);     // 窗
             break;
-        case APP_ID_RADIO:
-            // 收音机:机身 + 喇叭点阵 + 刻度窗 + 天线
-            set_frame(0, 10, 26, 68, 46, color, 4);
-            set_part(1, 18, 34, 24, 14, detail);   // 喇叭
-            set_part(2, 18, 54, 24, 4, color);
-            set_part(3, 18, 62, 24, 4, color);
-            set_part(4, 50, 34, 20, 8, color);    // 刻度窗
-            set_part(5, 50, 48, 20, 4, color);
-            set_part(6, 24, 14, 40, 4, detail);    // 天线
-            set_part(7, 60, 10, 8, 8, color);     // 天线头
+        case APP_ID_PRESENTER:
+            // 演示遥控:屏幕 + 播放键 + 遥控机身
+            set_frame(0, 8, 14, 72, 52, color, 4);       // 屏幕
+            set_part(1, 30, 34, 8, 12, detail);          // 左翻页
+            set_part(2, 50, 34, 8, 12, detail);          // 右翻页
+            set_part(3, 40, 32, 8, 16, warm);            // 播放
+            set_part(4, 28, 70, 32, 6, color);           // 机身底座
+            set_part(5, 40, 66, 8, 4, detail);           // 按键
             break;
-        case APP_ID_VOICE:
-            // 麦克风:拾音头 + 支架 + 底座
-            set_frame(0, 30, 8, 28, 44, color, 4);
-            set_part(1, 20, 34, 6, 16, color);    // 左弧
-            set_part(2, 62, 34, 6, 16, color);    // 右弧
-            set_part(3, 20, 50, 48, 6, color);    // 底弧
-            set_part(4, 41, 56, 6, 12, color);    // 立杆
-            set_part(5, 28, 68, 32, 6, color);    // 底座
-            break;
-        case APP_ID_XIAOZHI:
-            // 机器人头(吉祥物同族):头 + 大眼 + 天线 + 围巾
-            set_frame(0, 16, 18, 56, 44, color, 4);
-            set_part(1, 28, 30, 8, 12, color);    // 左眼
-            set_part(2, 52, 30, 8, 12, color);    // 右眼
-            set_part(3, 38, 50, 12, 4, color);    // 嘴
-            set_part(4, 42, 8, 4, 10, detail);     // 天线
-            set_part(5, 38, 4, 12, 6, detail);      // 天线头
-            set_part(6, 26, 64, 36, 6, warm);     // 围巾
-            break;
-        case APP_ID_MUSE:
-                set_frame(0, 18, 18, 52, 46, color, 4);
-                set_part(1, 29, 31, 6, 12, color);
-                set_part(2, 53, 31, 6, 12, color);
-                set_part(3, 36, 53, 16, 4, color);
-                set_part(4, 6, 34, 8, 20, color);
-                set_part(5, 74, 34, 8, 20, color);
-                break;
         case APP_ID_WIFI:
             // 信号塔:四级阶梯(与其它图标的"方块"语言一致)
             set_part(0, 14, 56, 12, 18, color);
@@ -206,27 +177,6 @@ void draw_app_icon(passport_app_id_t id, uint32_t color) {
             set_part(3, 26, 14, 16, 18, color);
             set_part(4, 52, 35, 16, 18, detail);
             set_part(5, 22, 56, 16, 18, warm);
-            break;
-        case APP_ID_GAME:
-            // 你在狗叫什么: 像素狗头(柴犬大脸 + 双折耳 + 眼鼻 + 汪汪大嘴)
-            set_frame(0, 16, 26, 52, 38, color, 4);   // 狗脸主体
-            set_part(1, 10, 18, 14, 16, color);       // 左耳
-            set_part(2, 60, 18, 14, 16, color);       // 右耳
-            set_part(3, 26, 36, 8, 8, color);         // 左眼
-            set_part(4, 50, 36, 8, 8, color);         // 右眼
-            set_part(5, 38, 44, 8, 6, color);         // 黑鼻头
-            set_part(6, 32, 54, 20, 8, color);        // 汪汪张开的大嘴
-            break;
-        case APP_ID_SOUND_JUMP:
-            // Same four-legged Claude silhouette as the game, matching theme in launcher.
-            set_part(0, 14, 16, 60, 40, color);
-            set_part(1, 4, 36, 80, 12, color);
-            set_part(2, 14, 56, 6, 14, color);
-            set_part(3, 26, 56, 6, 14, color);
-            set_part(4, 56, 56, 6, 14, color);
-            set_part(5, 68, 56, 6, 14, color);
-            set_part(6, 26, 26, 6, 12, UI_BG);
-            set_part(7, 56, 26, 6, 12, UI_BG);
             break;
         case APP_ID_STOPWATCH:
             set_part(0, 34, 6, 20, 6, color);
@@ -250,19 +200,6 @@ void draw_app_icon(passport_app_id_t id, uint32_t color) {
             set_part(8, 46, 46, 12, 4, color);
             set_part(9, 42, 60, 4, 4, color);
             break;
-        case APP_ID_TETRIS:
-            // 俄罗斯方块:T/L/方 三种积木错落
-            set_frame(0, 12, 14, 30, 10, color, 3);   // T 横条
-            set_part(1, 22, 24, 10, 10, color);       // T 竖
-            set_part(2, 12, 44, 10, 10, color);       // L 竖
-            set_part(3, 12, 54, 10, 10, color);
-            set_part(4, 22, 54, 10, 10, color);
-            set_part(5, 48, 24, 10, 10, color);       // O 方块
-            set_part(6, 58, 24, 10, 10, color);
-            set_part(7, 48, 34, 10, 10, color);
-            set_part(8, 58, 34, 10, 10, color);
-            set_part(9, 40, 58, 38, 10, color);       // I 长条
-            break;
         default:
             break;
     }
@@ -272,16 +209,16 @@ void update_card_content() {
     const passport_app_t *app = app_registry_get_by_index(s_selected_index);
     if (!app) return;
     lv_obj_set_style_text_font(s_app_title,
-        app->id == APP_ID_POMODORO ? &pomodoro_font_20 : &ui_font_20, 0);
+        &bebas_font_32, 0);
     lv_label_set_text(s_app_title, app_chinese_name(app->id));
     lv_label_set_text_fmt(s_page_number, "%02u / %02u", (unsigned)s_selected_index + 1,
                           (unsigned)app_registry_get_count());
     uint32_t color = kPhos;
     if (ui_theme_is_multicolor()) {
         switch (app->id) {
-            case APP_ID_RADIO: case APP_ID_GAME: case APP_ID_POMODORO: color = UI_TERTIARY; break;
-            case APP_ID_VOICE: case APP_ID_TETRIS: color = UI_SECONDARY; break;
-            case APP_ID_XIAOZHI: case APP_ID_STOPWATCH: color = UI_SUCCESS; break;
+            case APP_ID_POMODORO: color = UI_TERTIARY; break;
+            case APP_ID_PRESENTER: color = UI_SECONDARY; break;
+            case APP_ID_STOPWATCH: color = UI_SUCCESS; break;
             default: break;
         }
         ui_pixel_text_color(s_app_title, color);
@@ -338,15 +275,10 @@ void launcher_ui_init(void) {
     lv_obj_set_style_pad_all(s_screen, 0, 0);
 
     // ---- 状态栏 (y0..24):与首页同款 —— 炭灰条 + 共享 Wi-Fi 格 + 电池 ----
-    ui_pixel_top_bar(s_screen);
-    ui_pixel_wifi_bars_create(s_screen, 12, 18, s_wifi_bars);
-    s_battery = ui_pixel_battery_create(s_screen, 206, 6, kStatus,
-                                        &lv_font_montserrat_14);
+    ui_pixel_status_bar(s_screen, kStatus, &s_battery, s_wifi_bars, &s_clock);
 
-    lv_obj_t *catalogue = ui_pixel_label(s_screen, "应用", &buddy_font_16, UI_TEXT);
+    lv_obj_t *catalogue = ui_pixel_label(s_screen, "Apps", &buddy_font_16, UI_TEXT);
     ui_pixel_status_text_align(catalogue, 42, 40, LV_TEXT_ALIGN_LEFT);
-    s_clock = ui_pixel_label(s_screen, "--:--", &lv_font_montserrat_14, UI_TEXT);
-    ui_pixel_status_text_align(s_clock, 92, 56, LV_TEXT_ALIGN_CENTER);
     s_previous = ui_pixel_label(s_screen, "", &buddy_font_16, UI_TEXT_DIM);
     s_next = ui_pixel_label(s_screen, "", &buddy_font_16, UI_TEXT_DIM);
     lv_obj_set_pos(s_previous, 12, 50); lv_obj_set_size(s_previous, 216, 22);
@@ -376,12 +308,12 @@ void launcher_ui_init(void) {
         lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
         lv_obj_remove_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     }
-    s_app_title = ui_pixel_label(s_card, "", &ui_font_20, UI_TEXT);
-    lv_obj_set_pos(s_app_title, 0, 105); lv_obj_set_size(s_app_title, 216, 28);
+    s_app_title = ui_pixel_label(s_card, "", &bebas_font_32, UI_TEXT);
+    lv_obj_set_pos(s_app_title, 0, 101); lv_obj_set_size(s_app_title, 216, 34);
     lv_label_set_long_mode(s_app_title, LV_LABEL_LONG_DOT);
     lv_obj_set_style_text_align(s_app_title, LV_TEXT_ALIGN_CENTER, 0);
 
-    ui_pixel_footer(s_screen, "上下选择 · 确定打开", "长按确定返回首页", &buddy_font_16);
+    ui_pixel_footer(s_screen, "UP/DOWN select · OK open", "Hold OK for home", &buddy_font_16);
 
     update_card_content();
     launcher_ui_update_status();

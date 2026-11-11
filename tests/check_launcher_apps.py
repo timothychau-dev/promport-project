@@ -2,11 +2,9 @@ import os
 import re
 
 app_files = [
-    'main/apps/radio/app_radio.cc',
-    'main/apps/voice/app_voice.cc',
-    'main/apps/xiaozhi/app_xiaozhi.cc',
-    'main/apps/game/app_game.cc',
-    'main/apps/game/app_tetris.cc',
+    'main/apps/presenter/app_presenter.cc',
+    'main/apps/stopwatch/app_stopwatch.cc',
+    'main/apps/pomodoro/app_pomodoro.cc',
     'main/launcher/wifi_setup.cc',
     'main/launcher/settings.cc',
 ]

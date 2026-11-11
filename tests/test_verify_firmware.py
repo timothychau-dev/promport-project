@@ -41,23 +41,6 @@ class FirmwareTests(unittest.TestCase):
             (path / 'passport-os.elf').write_bytes(elf(v.HEAP_REGION_END - v.MIN_STATIC_HEAP + 1))
             with self.assertRaises(ValueError): v.verify_sram_budget(path)
 
-    def test_public_defaults(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory)
-            header = path / 'esp-idf/passport_muse/muse_proxy_defaults.h'
-            header.parent.mkdir(parents=True)
-            cache = path / 'CMakeCache.txt'
-            cache.write_text('PASSPORT_PUBLIC_RELEASE:BOOL=ON\n', encoding='utf-8')
-            header.write_text('#define MUSE_DEFAULT_PROXY_HOST ""\n#define MUSE_DEFAULT_PROXY_PORT 0\n', encoding='utf-8')
-            v.verify_public_defaults(path)
-            for flag in ('OFF', ''):
-                cache.write_text('PASSPORT_PUBLIC_RELEASE:BOOL='+flag+'\n', encoding='utf-8')
-                with self.assertRaises(ValueError): v.verify_public_defaults(path)
-            cache.write_text('PASSPORT_PUBLIC_RELEASE:BOOL=ON\n', encoding='utf-8')
-            for host, port in [('192.0.2.77', 0), ('', 1234)]:
-                header.write_text(f'#define MUSE_DEFAULT_PROXY_HOST "{host}"\n#define MUSE_DEFAULT_PROXY_PORT {port}\n', encoding='utf-8')
-                with self.assertRaises(ValueError): v.verify_public_defaults(path)
-
     def test_table(self):
         self.assertTrue(v.parse_partition_table(table())[1])
         with self.assertRaises(ValueError): v.parse_partition_table(table()[:500])

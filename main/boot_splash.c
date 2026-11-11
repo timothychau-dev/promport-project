@@ -5,6 +5,7 @@
 #include "ui_palette.h"
 
 #include "bsp_display.h"
+#include "app_fonts.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_log.h"
 #include "esp_timer.h"
@@ -61,19 +62,22 @@ void boot_splash_run(void) {
     // 主标题:PASSPORT OS(打字机由"光标块"配合实现 —— 文本先整段放好,
     // 用一块与底色同色的遮罩盖住,随节拍右移露出,等效打字且不重排文本)
     lv_obj_t *title = lv_label_create(s_splash);
-    lv_obj_set_style_text_font(title, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(title, &bebas_font_32, 0);
     lv_obj_set_style_text_color(title, lv_color_hex(C_PHOS), 0);
     lv_obj_set_style_text_letter_space(title, 2, 0);
-    lv_label_set_text(title, "PASSPORT OS");
-    lv_obj_align(title, LV_ALIGN_CENTER, 0, -26);
+    lv_label_set_text(title, "PROMPORT");
+    lv_obj_align(title, LV_ALIGN_CENTER, 0, -40);
 
-    // 副标题
+    // 副标题:品牌标语(两行居中,Progress-in-Progress 式 —— 加载器永远配词出现,
+    // 绝不裸转圈)
     lv_obj_t *sub = lv_label_create(s_splash);
     lv_obj_set_style_text_font(sub, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(sub, lv_color_hex(C_PHOSDIM), 0);
     lv_obj_set_style_text_letter_space(sub, 1, 0);
-    lv_label_set_text(sub, "TRAVEL INSTRUMENT");
-    lv_obj_align(sub, LV_ALIGN_CENTER, 0, 4);
+    lv_obj_set_width(sub, 220);
+    lv_obj_set_style_text_align(sub, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(sub, "DON'T PROMPT ALONE,\nPROMPT TOGETHER");
+    lv_obj_align(sub, LV_ALIGN_CENTER, 0, -6);
 
     // Measure the actual title rather than assuming a 150 px width. A mask
     // reveals the existing text, so its alignment never jumps between frames.

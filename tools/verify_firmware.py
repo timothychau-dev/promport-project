@@ -174,10 +174,6 @@ def verify_public_defaults(build_dir: Path) -> None:
     cache = (build_dir / "CMakeCache.txt").read_text(encoding="utf-8")
     if "PASSPORT_PUBLIC_RELEASE:BOOL=ON" not in cache.splitlines():
         raise ValueError("public build must enable PASSPORT_PUBLIC_RELEASE")
-    defaults = (build_dir / "esp-idf/passport_muse/muse_proxy_defaults.h").read_text(encoding="utf-8")
-    lines = [line.strip() for line in defaults.splitlines()]
-    if '#define MUSE_DEFAULT_PROXY_HOST ""' not in lines or '#define MUSE_DEFAULT_PROXY_PORT 0' not in lines:
-        raise ValueError("public build must have empty proxy defaults")
 
 
 def main() -> int:

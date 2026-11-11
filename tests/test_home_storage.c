@@ -22,6 +22,14 @@ esp_err_t esp_vfs_spiffs_register(const esp_vfs_spiffs_conf_t *config) {
 }
 void vTaskDelay(unsigned ticks) { (void)ticks; ++delays; }
 
+// Unused without --gc-sections (macOS ld lacks it); mirrors ample free space.
+esp_err_t esp_spiffs_info(const char *partition_label, size_t *total, size_t *used) {
+    (void)partition_label;
+    if (total) *total = 2 * 1024 * 1024;
+    if (used) *used = 0;
+    return ESP_OK;
+}
+
 const esp_partition_t *esp_partition_find_first(int type, int subtype, const char *label) {
     assert(type == ESP_PARTITION_TYPE_DATA && subtype == ESP_PARTITION_SUBTYPE_DATA_SPIFFS);
     assert(!strcmp(label, "storage"));

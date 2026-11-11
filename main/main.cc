@@ -20,7 +20,6 @@
 #include "ui/ui_capture.h"
 #include "apps/pomodoro/app_pomodoro.h"
 #include "esp_log.h"
-#include "passport_muse.h"
 #include "esp_timer.h"
 #include "esp_system.h"
 #include "esp_heap_caps.h"
@@ -298,15 +297,13 @@ static void handle_serial_command(int c) {
         // 诊断版专用:逐块打印内部堆及其所属任务,用于比对应用退出前后的残留。
         bsp_memory_map();
     } else if (c == 'j') {
-        app_registry_switch_to(APP_ID_SOUND_JUMP);
+        app_registry_switch_to(APP_ID_STOPWATCH);
     } else if (c == 't') {
         app_registry_switch_to(APP_ID_POMODORO);
     } else if (c == 'm') {
-        app_registry_switch_to(APP_ID_MUSE);
+        app_registry_switch_to(APP_ID_PRESENTER);
     } else if (c == 'M') {
-        if (app_registry_get_active() == APP_ID_MUSE) passport_muse_diagnostic_ble_cycle();
-    } else if (c == '?') {
-        passport_muse_log_diagnostics();
+        // Kept for backward compatibility of the diagnostic command set.
     } else if (c >= '1' && c <= '9') {
         int target_id = c - '0';
         ESP_LOGI(TAG, "[SerialCmd] Direct switch to App ID %d", target_id);
@@ -350,7 +347,7 @@ extern "C" void app_main(void) {
         gpio_hold_dis((gpio_num_t)BSP_LCD_BL);
     }
 
-    ESP_LOGI(TAG, "=== FoloToy AI Passport OS Starting ===");
+    ESP_LOGI(TAG, "=== Promport OS Starting ===");
     const esp_pm_config_t pm_config = { .max_freq_mhz = 160, .min_freq_mhz = 40,
                                         .light_sleep_enable = true };
     ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
@@ -395,7 +392,7 @@ extern "C" void app_main(void) {
 
     // 4. 初始化全局 Wi-Fi 管理器；若已存有配置则在后台自动拉起 Station 连接
     WifiManagerConfig wifi_cfg = {};
-    wifi_cfg.ssid_prefix = "Passport-WiFi";
+    wifi_cfg.ssid_prefix = "PROMPORT-WiFi";
     wifi_cfg.language = "zh-CN";
     WifiManager::GetInstance().Initialize(wifi_cfg);
     // 待机省电默认档:MAX modem sleep(首页/桌面/设置等非流媒体前台)。
@@ -443,6 +440,6 @@ extern "C" void app_main(void) {
     xTaskCreateStatic(system_monitor_task, "sys_mon", sizeof(s_monitor_stack), NULL, 1,
                       s_monitor_stack, &s_system_tasks[3]);
 
-    ESP_LOGI(TAG, "Passport OS Boot Complete. Initial Free Heap: %u KB",
+    ESP_LOGI(TAG, "Promport OS Boot Complete. Initial Free Heap: %u KB",
              (unsigned)(esp_get_free_heap_size() / 1024));
 }

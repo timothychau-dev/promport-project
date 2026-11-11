@@ -11,17 +11,11 @@ extern "C" {
 
 typedef enum {
     APP_ID_LAUNCHER = 0,
-    APP_ID_RADIO,
-    APP_ID_VOICE,
-    APP_ID_XIAOZHI,
     APP_ID_WIFI,
     APP_ID_SETTINGS,
     APP_ID_HOME,
-    APP_ID_GAME,
-    APP_ID_TETRIS,
     APP_ID_STOPWATCH,
-    APP_ID_SOUND_JUMP,
-    APP_ID_MUSE,
+    APP_ID_PRESENTER,
     APP_ID_POMODORO,
     APP_ID_COUNT
 } passport_app_id_t;
@@ -34,7 +28,7 @@ typedef enum {
     BTN_EVT_LONG_UP,
 } app_btn_event_t;
 
-typedef struct {
+typedef struct passport_app {
     passport_app_id_t id;
     const char *name;           // 中文显示名称
     const char *en_name;        // 英文标签

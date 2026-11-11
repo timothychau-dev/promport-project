@@ -5,7 +5,6 @@
 #include "esp_log.h"
 #include <esp_random.h>      // esp_fill_random():每次开启上传窗口换一个一次性 token
 #include "wifi_manager.h"
-#include "passport_muse.h"
 #include "ui/ui_palette.h"
 
 #include <cJSON.h>
@@ -186,57 +185,6 @@ static esp_err_t handler_profile_post(httpd_req_t *req) {
     esp_err_t err = home_profile_set_text(&in);
     return send_json(req, err == ESP_OK ? 200 : 400,
                      err == ESP_OK ? "{\"ok\":true}" : "{\"error\":\"invalid\"}");
-}
-
-static esp_err_t send_muse_config(httpd_req_t *req) {
-    bool token_set = false, paired = false;
-    passport_muse_config_status(&token_set, &paired);
-    char proxy_host[16]; uint16_t proxy_port = 0;
-    passport_muse_proxy_config(proxy_host, sizeof(proxy_host), &proxy_port);
-    cJSON *obj = cJSON_CreateObject();
-    cJSON_AddBoolToObject(obj, "ok", true);
-    cJSON_AddBoolToObject(obj, "token_set", token_set);
-    cJSON_AddBoolToObject(obj, "paired", paired);
-    cJSON_AddStringToObject(obj, "proxy_host", proxy_host);
-    cJSON_AddNumberToObject(obj, "proxy_port", proxy_port);
-    char *json = cJSON_PrintUnformatted(obj);
-    cJSON_Delete(obj);
-    if (!json) return send_json(req, 500, "{\"error\":\"no_memory\"}");
-    esp_err_t err = send_json(req, 200, json);
-    cJSON_free(json);
-    return err;
-}
-static esp_err_t handler_muse_get(httpd_req_t *req) {
-    if (!token_ok(req)) return send_json(req, 401, "{\"error\":\"unauthorized\"}");
-    return send_muse_config(req);
-}
-static esp_err_t handler_muse_post(httpd_req_t *req) {
-    if (!token_ok(req)) return send_json(req, 401, "{\"error\":\"unauthorized\"}");
-    char body[512];
-    if (req->content_len <= 0 || req->content_len >= sizeof(body)) return send_json(req, 400, "{\"error\":\"bad size\"}");
-    int received = 0;
-    while (received < req->content_len) {
-        int n = httpd_req_recv(req, body + received, req->content_len - received);
-        if (n <= 0) return send_json(req, 400, "{\"error\":\"recv\"}");
-        received += n;
-    }
-    body[received] = 0;
-    cJSON *obj = cJSON_Parse(body);
-    const cJSON *token = cJSON_GetObjectItemCaseSensitive(obj, "sdk_token");
-    const cJSON *proxy_host = cJSON_GetObjectItemCaseSensitive(obj, "proxy_host");
-    const cJSON *proxy_port = cJSON_GetObjectItemCaseSensitive(obj, "proxy_port");
-    bool proxy_valid = !proxy_host || (cJSON_IsString(proxy_host) && cJSON_IsNumber(proxy_port) &&
-        proxy_port->valuedouble >= 0 && proxy_port->valuedouble <= 65535 &&
-        proxy_port->valuedouble == proxy_port->valueint &&
-        passport_muse_proxy_valid(proxy_host->valuestring, (uint16_t)proxy_port->valueint));
-    esp_err_t err = proxy_valid ? ESP_OK : ESP_ERR_INVALID_ARG;
-    if (err == ESP_OK && token) err = cJSON_IsString(token) ? passport_muse_set_sdk_token(token->valuestring) : ESP_ERR_INVALID_ARG;
-    if (err == ESP_OK && proxy_host) err = passport_muse_set_proxy(proxy_host->valuestring, (uint16_t)proxy_port->valueint);
-    if (!token && !proxy_host) err = ESP_ERR_INVALID_ARG;
-    cJSON_Delete(obj);
-    std::memset(body, 0, sizeof(body));
-    if (err == ESP_OK) return send_muse_config(req);
-    return send_json(req, 400, err == ESP_ERR_INVALID_STATE ? "{\"error\":\"muse_active\"}" : "{\"error\":\"muse_config\"}");
 }
 
 static esp_err_t handler_avatar_get(httpd_req_t *req) {
@@ -594,8 +542,6 @@ esp_err_t home_upload_start(void) {
     const httpd_uri_t networks_uri = {"/api/networks", HTTP_GET, handler_networks, NULL};
     const httpd_uri_t connect_uri = {"/api/connect", HTTP_POST, handler_connect, NULL};
     const httpd_uri_t finish_uri = {"/api/finish", HTTP_POST, handler_finish, NULL};
-    const httpd_uri_t muse_get = {"/api/muse", HTTP_GET, handler_muse_get, NULL};
-    const httpd_uri_t muse_post = {"/api/muse", HTTP_POST, handler_muse_post, NULL};
     const httpd_uri_t captive_uri = {"/*", HTTP_GET, handler_captive, NULL};
     // 2026-09-13 修复(B8):注册返回值必须检查。原来四个 handler 全丢返回值,
     // 注册失败时页面直接 404 且日志里一行痕迹都没有。
@@ -606,7 +552,6 @@ esp_err_t home_upload_start(void) {
         {&share_get, "GET /api/share"}, {&cards_get, "GET /api/cards"}, {&cards_post, "POST /api/cards"},
         {&setup_uri, "GET /api/setup"}, {&networks_uri, "GET /api/networks"},
         {&connect_uri, "POST /api/connect"}, {&finish_uri, "POST /api/finish"},
-        {&muse_get, "GET /api/muse"}, {&muse_post, "POST /api/muse"},
         {&captive_uri, "captive portal"},
     };
     for (const auto &r : routes) {

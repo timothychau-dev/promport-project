@@ -13,18 +13,14 @@ LV_FONT_DECLARE(radio_font_title);
 // 应用目录,2026-09-12 随 AI设备 模块移除迁到 fonts/,避免被一起删掉。
 // 也用于 AI语音 的**动态文本**(电脑下发的转写/审批正文,字符不可预知)。
 LV_FONT_DECLARE(buddy_font_16);
-// AI语音 标题/提示字体(20px/4bpp,反锯齿)。只含该界面静态文案用到的字 ——
-// 改 main/apps/voice/app_ui.c 的中文文案后必须重新生成:
-//   bash _diag/gen_voice_font.sh(见 main/fonts/voice_font_20.c 文件头)
-LV_FONT_DECLARE(voice_font_20);
-// 全机共享标题字体(20px/4bpp,SourceHanSansSC 子集)。覆盖 Launcher/设置/小智
+// 全机共享标题字体(20px/4bpp,SourceHanSansSC 子集)。覆盖 Launcher/设置
 // 的静态中文标题与提示 —— 改这些界面的中文文案后必须重新生成:
 //   wsl -d Ubuntu-24.04 bash /mnt/f/WORK/AI硬件/_diag/gen_ui_font.sh
 LV_FONT_DECLARE(ui_font_20);
+// 首页姓名用 Bebas Neue 显示体(仅拉丁字母/数字/标点;中文名回退 buddy_font_16)
+LV_FONT_DECLARE(bebas_font_32);
 // 首页环境仪表 12px 专用紧凑字体(网格读数/风向/体感/状态)
 LV_FONT_DECLARE(home_font_12);
-// Five additional 20px glyphs, with existing ui_font_20 as fallback.
-LV_FONT_DECLARE(pomodoro_font_20);
 // Digits and colon only: do not link the full Montserrat 48px repertoire.
 LV_FONT_DECLARE(pomodoro_digits_48);
 

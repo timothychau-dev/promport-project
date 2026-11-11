@@ -7,7 +7,7 @@
 
 inline unsigned mock_objects = 0, mock_timers = 0, mock_wakes = 0;
 inline unsigned mock_heap = 100000, mock_largest = 40000;
-inline int mock_locks = 0, mock_foreground = 3;
+inline int mock_locks = 0, mock_foreground = 4;
 inline bool mock_awake = true, mock_allow_wake = true, mock_lock_available = true;
 inline int64_t mock_now = 1000000;
 constexpr uint8_t BSP_BTN_OK=0, BSP_BTN_UP=1, BSP_BTN_DOWN=2;
@@ -17,7 +17,7 @@ constexpr uint32_t UI_BG=0, UI_TEXT=1, UI_TEXT_DIM=2, UI_ACCENT=3,
     UI_WARNING=4, UI_SURFACE_ALT=5, UI_ON_ACCENT=6;
 #define ESP_LOGI(...) ((void)0)
 struct lv_font_t {};
-inline const lv_font_t buddy_font_16{}, pomodoro_font_20{}, pomodoro_digits_48{}, lv_font_montserrat_14{};
+inline const lv_font_t buddy_font_16{}, ui_font_20{}, pomodoro_digits_48{}, lv_font_montserrat_14{};
 struct lv_obj_t {
     lv_obj_t *parent=nullptr;
     std::vector<lv_obj_t*> children;
