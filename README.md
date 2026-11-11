@@ -48,8 +48,8 @@ Everything here is built on the excellent work of the [Passport OS](https://gith
 Requires **Git** and **ESP-IDF 5.5.3** with its toolchain.
 
 ```bash
-git clone https://github.com/timothychau-dev/prompter-project.git
-cd prompter-project
+git clone https://github.com/timothychau-dev/promport-project.git
+cd promport-project
 bash build.sh release
 ```
 
